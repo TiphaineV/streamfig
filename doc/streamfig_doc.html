@@ -1,0 +1,471 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>streamfig 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-streamfig-s-documentation">
+<h1>Welcome to streamfig’s documentation!<a class="headerlink" href="#welcome-to-streamfig-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<span id="document-Drawing"></span><div class="section" id="module-Drawing">
+<span id="drawing-module"></span><h2>Drawing module<a class="headerlink" href="#module-Drawing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Drawing.Drawing">
+<em class="property">class </em><code class="descclassname">Drawing.</code><code class="descname">Drawing</code><span class="sig-paren">(</span><em>alpha=0.0</em>, <em>omega=10.0</em>, <em>time_width=500</em>, <em>discrete=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Initializes a stream graph drawing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>alpha</strong> (<em>float</em>) – Start time of stream graph.</li>
+<li><strong>omega</strong> (<em>float</em>) – End time of stream graph.</li>
+<li><strong>time_width</strong> (<em>positive int</em>) – Width (in the final fig) of one time unit.</li>
+<li><strong>discrete</strong> (<em>positive int</em>) – Duration of the time step if time is discrete. 0 if time is continuous.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Drawing</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">5.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Drawing</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="Drawing.Drawing.addColor">
+<code class="descname">addColor</code><span class="sig-paren">(</span><em>name</em>, <em>hex</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new RGB color for use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – Color identifier (must be unique, case sensitive)</li>
+<li><strong>hex</strong> (<em>str</em>) – Color in hexadecimal format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addColor</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;#FF0000&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addLink">
+<code class="descname">addLink</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>curving=0.0</em>, <em>color=0</em>, <em>height=0.5</em>, <em>width=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addLink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a link from time b to time e between nodes u and v.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>str</em>) – Node to be linked</li>
+<li><strong>v</strong> (<em>str</em>) – Node to be linked</li>
+<li><strong>b</strong> (<em>float</em>) – Start time of the link</li>
+<li><strong>e</strong> (<em>float</em>) – End time of the link</li>
+<li><strong>curving</strong> (<em>float</em>) – Curving of the link. 0 corresponds to a straight link, 
+negative values will draw the link bent on the left, 
+positive values will draw the link bent on the right</li>
+<li><strong>color</strong> (<em>str/int</em>) – the link’s color (see addColor())</li>
+<li><strong>height</strong> (<em>float</em>) – Fixes the position of the duration bar; values are between 0 and 1.
+0 would draw the duration bar at node u’s level, 1 at node’s v, 0.5 in between, etc.</li>
+<li><strong>width</strong> (<em>int</em>) – The link’s width</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add link from time 1 to time 3 between nodes u and v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addLink</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Add a right curved link from time 1 to time 3 between nodes u and v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addLink</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">curving</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addNode">
+<code class="descname">addNode</code><span class="sig-paren">(</span><em>u</em>, <em>times=[]</em>, <em>color=0</em>, <em>linetype=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new node to the stream graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>str</em>) – Name of the node (should be unique).</li>
+<li><strong>times</strong> (<em>list of 2-tuples</em>) – List of tuples indicating when the node is present.</li>
+<li><strong>color</strong> (<em>int</em><em> or </em><em>str</em>) – Color of the node, either a XFIG int or a user-defined color.</li>
+<li><strong>linetype</strong> – <p>?</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Adds a node &quot;v&quot; from alpha to omega</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addNode</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Adds a node &quot;v&quot; from time 1 to time 2.5 and from time 4 to time 8.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addNode</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mf">2.5</span><span class="p">),(</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addNodeCluster">
+<code class="descname">addNodeCluster</code><span class="sig-paren">(</span><em>u</em>, <em>times=[]</em>, <em>color=0</em>, <em>width=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addNodeCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addNodeCluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a node cluster (drawn as a rectangle) for one node over time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>str</em>) – The node in the cluster</li>
+<li><strong>times</strong> (<em>list of tuples</em>) – The times at which u is in the cluster</li>
+<li><strong>color</strong> (<em>str/int</em>) – The color of the rectangle</li>
+<li><strong>width</strong> (<em>int</em>) – The width of the rectangle</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create the blue node cluster {u}x[3,4] U {v}x[5,7.5] U {x}x[2,4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addNodeCluster</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addNodeCluster</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">5</span><span class="p">,</span><span class="mf">7.5</span><span class="p">)],</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addNodeCluster</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addNodeIntervalMark">
+<code class="descname">addNodeIntervalMark</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>color=0</em>, <em>width=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addNodeIntervalMark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addNodeIntervalMark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addParameter">
+<code class="descname">addParameter</code><span class="sig-paren">(</span><em>letter</em>, <em>value</em>, <em>color=0</em>, <em>width=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a parameter (like Delta=2). Multiple parameters will be placed at the top of the drawing, on each other’s side</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>letter</strong> (<em>str</em>) – The letter for the parameter, in ascii (will be translated in greek, i.e. d gives delta, m gives mu, etc.)</li>
+<li><strong>value</strong> (<em>float</em>) – The value for the parameter</li>
+<li><strong>color</strong> (<em>int/str</em>) – The color (see addColor())</li>
+<li><strong>width</strong> (<em>int</em>) – The interval’s width</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Adds a parameter delta with value 3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addParameter</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addPath">
+<code class="descname">addPath</code><span class="sig-paren">(</span><em>path</em>, <em>start</em>, <em>end</em>, <em>gamma=0</em>, <em>color=0</em>, <em>width=1</em>, <em>depth=51</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a temporal path from a sequence of (t,u,v) meaning that there was a hop from u to v at time t.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<em>list</em>) – A list of (t,u,v) that are the hops in the path</li>
+<li><strong>start</strong> (<em>float</em>) – The start time of the path</li>
+<li><strong>end</strong> (<em>float</em>) – The end time of the path</li>
+<li><strong>gamma</strong> (<em>float</em>) – Useful for gamma-path (if gamma &gt; 0, the hops from u to v will take gamma time units)</li>
+<li><strong>color</strong> (<em>int/str</em>) – The path’s color (see addColor())</li>
+<li><strong>width</strong> (<em>int</em>) – The path’s width</li>
+<li><strong>depth</strong> (<em>int</em>) – Layer for XFIG. Higher values will put the mark in the background, lower in the foreground.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Path from u to x from time 1 to time 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addPath</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">)],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># gamma=2-path from u to x from time 1 to time 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addPath</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">)],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addRectangle">
+<code class="descname">addRectangle</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>b</em>, <em>e</em>, <em>width=100</em>, <em>depth=51</em>, <em>color=0</em>, <em>border=''</em>, <em>bordercolor=0</em>, <em>borderwidth=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addRectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a rectangle from node u to node v and from time b to time e.
+The corners of the rectangle will be (u,b), (u,e), (v,b), (v,e)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>str</em>) – Start node</li>
+<li><strong>v</strong> (<em>str</em>) – End node</li>
+<li><strong>b</strong> (<em>float</em>) – Start time</li>
+<li><strong>e</strong> (<em>float</em>) – End time</li>
+<li><strong>width</strong> (<em>int</em>) – The rectangle’s width (to add an offset)</li>
+<li><strong>depth</strong> (<em>int</em>) – Layer for XFIG. Higher values will put the mark in the background, lower in the foreground</li>
+<li><strong>color</strong> (<em>int/str</em>) – Background color (see addColor())</li>
+<li><strong>border</strong> (<em>str</em>) – If borders should be drawn, takes “lrtb” (for left, right, top, bottom) as arguments</li>
+<li><strong>bordercolor</strong> (<em>int/str</em>) – The border’s color (see addColor())</li>
+<li><strong>borderwidth</strong> (<em>int</em>) – The border’s width</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Rectangle without border</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addRectangle</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Rectangle with border all around</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addRectangle</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;lrtb&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Rectangle with borders except on top</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addRectangle</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;lrb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addTime">
+<code class="descname">addTime</code><span class="sig-paren">(</span><em>t</em>, <em>label=''</em>, <em>width=1</em>, <em>font=12</em>, <em>color=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a vertical dotted line at a given time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> – the time at which the line will be drawn</li>
+<li><strong>label</strong> – the label that will be displayed on top of the vertical line</li>
+<li><strong>width</strong> – the line’s width</li>
+<li><strong>font</strong> – the label’s font (in pt)</li>
+<li><strong>color</strong> – the line’s color (XFIG defined or user-defined, see addColor() )</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Adds a vertical line labelled &quot;t&quot; at time 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addTime</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addTimeIntervalMark">
+<code class="descname">addTimeIntervalMark</code><span class="sig-paren">(</span><em>b</em>, <em>e</em>, <em>color=0</em>, <em>width=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addTimeIntervalMark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addTimeIntervalMark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addTimeLine">
+<code class="descname">addTimeLine</code><span class="sig-paren">(</span><em>ticks=1</em>, <em>marks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addTimeLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addTimeLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a time line at the bottom of the stream graph.</p>
+<p>/!Should be called last /!
+:param ticks: Granularity a which ticks should be outputted (every 2, every 1, etc.)
+:param marks: Custom ticks in the form (t, l)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Most common usage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addTimeLine</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># With one custom tick labeled &quot;a&quot; at time 2.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addTimeLine</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="p">[(</span><span class="mf">2.5</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.addTimeNodeMark">
+<code class="descname">addTimeNodeMark</code><span class="sig-paren">(</span><em>t</em>, <em>v</em>, <em>color=0</em>, <em>width=2</em>, <em>depth=49</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.addTimeNodeMark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.addTimeNodeMark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a mark (a cross) at a given node and time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> (<em>float</em>) – The time at which to add the mark</li>
+<li><strong>v</strong> (<em>str</em>) – The node at which to add the mark</li>
+<li><strong>color</strong> (<em>int/str</em>) – The mark’s color (see addColor())</li>
+<li><strong>width</strong> (<em>int</em>) – The mark’s width</li>
+<li><strong>depth</strong> (<em>int</em>) – Layer for XFIG. Higher values will put the mark in the background, lower in the foreground.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">addTimeNodeMark</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Drawing.Drawing.setLineType">
+<code class="descname">setLineType</code><span class="sig-paren">(</span><em>def_linetype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#Drawing.setLineType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.Drawing.setLineType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the linetype for nodes (i.e. from dashed to dotted). Default is dotted (linetype=2).
+See FIG documentation for all values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>def_linetype</strong> (<em>int</em>) – the new linetype</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Drawing.drange">
+<code class="descclassname">Drawing.</code><code class="descname">drange</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Drawing.html#drange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Drawing.drange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function generating a range of numbers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<em>float</em>) – Range start</li>
+<li><strong>end</strong> (<em>float</em>) – Range end</li>
+<li><strong>step</strong> (<em>float</em>) – Range step (the difference between two subsequent elements in the range equals step)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an iterator over the range</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">generator</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">drange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)]</span>
+<span class="go">[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html#document-index">streamfig</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-Drawing">Drawing module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html#document-index">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Tiphaine Viard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
