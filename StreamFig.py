@@ -31,7 +31,7 @@ def drange(start, stop, step):
         yield r
         r += step
 
-class Drawing:
+class StreamFig:
     """
         Initializes a stream graph drawing.
 
