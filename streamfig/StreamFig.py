@@ -75,7 +75,7 @@ class StreamFig:
     _color_cpt = 31
 
 
-    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0):
+    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
         print("""#FIG 3.2  Produced by xfig version 3.2.5b\n\
 Landscape\n\
 Center\n\
@@ -90,6 +90,7 @@ Single\n\
         self._omega = float(omega)
         self._time_unit = time_width
         self._discrete = discrete
+        self.directed = directed
 
         self.linetype = 2
 
@@ -257,9 +258,19 @@ Single\n\
             x3 = self._offset_x + int(i * self._time_unit)
             y3 = self._offset_y + self._nodes[v]*self._node_unit
 
-            sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 0 3\n")
+            if self.directed:
+                dir_arg1 = "1"
+                dir_arg2 = "1.000"
+            else:
+                dir_arg1 = "0"
+                dir_arg2 = "-1.000"
+
+            sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(dir_arg1) + " 0 3\n")
+            # arrow type
+            if self.directed:
+                sys.stdout.write("1 1 3.00 90.00 150.00\n")
             sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
-            sys.stdout.write("0.000 -1.000 0.000\n")
+            sys.stdout.write("0.000 " + str(dir_arg2) + " 0.000\n")
 
             numnodes = abs(self._nodes[u] - self._nodes[v])
 
@@ -281,15 +292,28 @@ Single\n\
         x3 = self._offset_x + int(b * self._time_unit)
         y3 = self._offset_y + self._nodes[v]*self._node_unit
 
-        sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 0 3\n")
+        if self.directed:
+            dir_arg1 = "1"
+            dir_arg2 = "1.000"
+        else:
+            dir_arg1 = "0"
+            dir_arg2 = "-1.000"
+
+        sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(dir_arg1) + " 0 3\n")
+        # arrow type
+        if self.directed:
+            sys.stdout.write("1 1 3.00 90.00 150.00\n")
         sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
-        sys.stdout.write("0.000 -1.000 0.000\n")
+        sys.stdout.write("0.000 " + str(dir_arg2) +" 0.000\n")
 
         numnodes = abs(self._nodes[u] - self._nodes[v])
 
         # Add duration
         print("2 1 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 -1 0 0 2")
         print(str(self._offset_x + int((b + curving) * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit + (numnodes*self._node_unit*height))) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]*self._node_unit - (numnodes*self._node_unit*(1-height))))
+
+    def test(self):
+        print("test")
 
     def addNodeCluster(self, u, times=[], color=0, width=200):
         """
