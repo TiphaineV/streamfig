@@ -51,6 +51,7 @@ class StreamFig:
         >>> d = Drawing(alpha=0, omega=6, discrete=2)
     """
 
+    __version__ = '1.1.1'
     _alpha = 0.0
     _omega = 0.0
     _discrete = -1
@@ -73,6 +74,7 @@ class StreamFig:
 
     _colors = {}
     _color_cpt = 31
+    _directed = False
 
 
     def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
@@ -90,7 +92,7 @@ Single\n\
         self._omega = float(omega)
         self._time_unit = time_width
         self._discrete = discrete
-        self.directed = directed
+        self._directed = directed
 
         self.linetype = 2
 
@@ -246,6 +248,10 @@ Single\n\
             color = self._colors[color]
         if self._nodes[u] > self._nodes[v]:
             (u,v) = (v,u)
+            arrow_type = "1"
+        else:
+            arrow_type = "2"
+
         for i in drange(b,e, self._discrete):
             # Draw circles for u and v
             print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
@@ -258,16 +264,16 @@ Single\n\
             x3 = self._offset_x + int(i * self._time_unit)
             y3 = self._offset_y + self._nodes[v]*self._node_unit
 
-            if self.directed:
-                dir_arg1 = "1"
+            if self._directed:
+                dir_arg1 = "2"
                 dir_arg2 = "1.000"
             else:
                 dir_arg1 = "0"
                 dir_arg2 = "-1.000"
 
-            sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(dir_arg1) + " 0 3\n")
+            sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n")
             # arrow type
-            if self.directed:
+            if self._directed:
                 sys.stdout.write("1 1 3.00 90.00 150.00\n")
             sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
             sys.stdout.write("0.000 " + str(dir_arg2) + " 0.000\n")
@@ -280,6 +286,9 @@ Single\n\
             color = self._colors[color]
         if self._nodes[u] > self._nodes[v]:
             (u,v) = (v,u)
+            arrow_type = "0 1"
+        else:
+            arrow_type = "1 0"
 
         # Draw circles for u and v
         print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
@@ -292,16 +301,16 @@ Single\n\
         x3 = self._offset_x + int(b * self._time_unit)
         y3 = self._offset_y + self._nodes[v]*self._node_unit
 
-        if self.directed:
+        if self._directed:
             dir_arg1 = "1"
             dir_arg2 = "1.000"
         else:
             dir_arg1 = "0"
             dir_arg2 = "-1.000"
 
-        sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(dir_arg1) + " 0 3\n")
+        sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n")
         # arrow type
-        if self.directed:
+        if self._directed:
             sys.stdout.write("1 1 3.00 90.00 150.00\n")
         sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
         sys.stdout.write("0.000 " + str(dir_arg2) +" 0.000\n")
@@ -311,9 +320,6 @@ Single\n\
         # Add duration
         print("2 1 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 -1 0 0 2")
         print(str(self._offset_x + int((b + curving) * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit + (numnodes*self._node_unit*height))) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]*self._node_unit - (numnodes*self._node_unit*(1-height))))
-
-    def test(self):
-        print("test")
 
     def addNodeCluster(self, u, times=[], color=0, width=200):
         """
