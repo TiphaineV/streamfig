@@ -246,11 +246,16 @@ Single\n\
     def __addDiscreteLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
         if color in self._colors:
             color = self._colors[color]
-        if self._nodes[u] > self._nodes[v]:
-            (u,v) = (v,u)
-            arrow_type = "1"
+        if self._directed:
+            if self._nodes[u] > self._nodes[v]:
+                (u,v) = (v,u)
+                arrow_type = "0 1"
+            else:
+                arrow_type = "1 0"
         else:
-            arrow_type = "2"
+            if self._nodes[u] > self._nodes[v]:
+                (u,v) = (v,u)
+            arrow_type = "0 0"
 
         for i in drange(b,e, self._discrete):
             # Draw circles for u and v
@@ -284,11 +289,16 @@ Single\n\
     def __addContinuousLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
         if color in self._colors:
             color = self._colors[color]
-        if self._nodes[u] > self._nodes[v]:
-            (u,v) = (v,u)
-            arrow_type = "0 1"
+        if self._directed:
+            if self._nodes[u] > self._nodes[v]:
+                (u,v) = (v,u)
+                arrow_type = "0 1"
+            else:
+                arrow_type = "1 0"
         else:
-            arrow_type = "1 0"
+            if self._nodes[u] > self._nodes[v]:
+                (u,v) = (v,u)
+            arrow_type = "0 0"
 
         # Draw circles for u and v
         print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
