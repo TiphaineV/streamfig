@@ -76,17 +76,27 @@ class StreamFig:
     _color_cpt = 31
     _directed = False
 
+    _streaming = True
+    _out_fp = None
 
-    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False):
-        print("""#FIG 3.2  Produced by xfig version 3.2.5b\n\
-Landscape\n\
-Center\n\
-Inches\n\
-Letter\n\
-100.00\n\
-Single\n\
--2\n\
-1200 2\n""")
+
+    def streaming(func):
+        """
+            Decorator for streaming mode (for larger datasets, typically)
+            If the streaming class argument is True, then every action will be outputted
+            straight away. Else, it will be stored for later usage.
+        """
+        import functools
+        @functools.wrap(func)
+        def wrapper(self, *args, **kwargs):
+            func(*args, **kwargs)
+        return wrapper
+
+
+
+    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False, streaming=True):
+
+        self._streaming = streaming
 
         self._alpha = float(alpha)
         self._omega = float(omega)
@@ -97,7 +107,20 @@ Single\n\
         self.linetype = 2
 
         # Useful predefined colors
-        self.addColor("grey", "#888888")
+        # self.addColor("grey", "#888888")
+
+        
+        self._header = """#FIG 3.2  Produced by xfig version 3.2.5b\n\
+Landscape\n\
+Center\n\
+Inches\n\
+Letter\n\
+100.00\n\
+Single\n\
+-2\n\
+1200 2\n"""
+        if self._streaming:
+            print(header)
 
 
     def setLineType(def_linetype):
@@ -184,8 +207,6 @@ Single\n\
             times : suite d'intervalles de temps ou le noeud est actif
         """
 
-        if linetype is None:
-            linetype = self.linetype
 
         if color in self._colors:
             color = self._colors[color]
@@ -194,17 +215,32 @@ Single\n\
             self._first_node = u
 
         self._node_cpt += 1
-        self._nodes[u] = self._node_cpt
+        self._nodes[u] = {}
+        self._nodes[u]["id"] = self._node_cpt
+        self._nodes[u]["times"] = times
+        self._nodes[u]["color"] = color
+        
+        if linetype is None:
+            linetype = self.linetype
+        self._nodes[u]["linetype"] = linetype
 
-        print("4 0 " + str(color) + " 50 -1 0 30 0.0000 4 135 120 " + str(self._offset_x + int(self._alpha * self._time_unit) - 400) + " " + str(self._offset_y + 125 + int(self._node_cpt * self._node_unit)) + " " + str(u) + "\\001")
+    def printNode(self, u):
+        color = self._nodes[u]["color"]
+        times = self._nodes[u]["times"]
+        linetype = self._nodes[u]["linetype"]
+        nodeid = self._nodes[u]["id"]
+        
+        # print node id
+        print("4 0 " + str(color) + " 50 -1 0 30 0.0000 4 135 120 " + str(self._offset_x + int(self._alpha * self._time_unit) - 400) + " " + str(self._offset_y + 125 + int(nodeid * self._node_unit)) + " " + str(u) + "\\001", file=self._out_fp)
 
+        # print node timelines
         if len(times) == 0:
             print("""2 1 """ + str(linetype) + """ 2 """ + str(color) + """ 7 50 -1 -1 6.000 0 0 7 0 0 2\n \
-          """ + str(self._offset_x + int(self._alpha * self._time_unit)) + """ """ + str(self._offset_y + int(self._node_cpt * self._node_unit)) + """ """ + str(self._offset_x + int(self._omega * self._time_unit)) + """ """ + str(self._offset_y + int(self._node_cpt * self._node_unit)))
+          """ + str(self._offset_x + int(self._alpha * self._time_unit)) + """ """ + str(self._offset_y + int(nodeid * self._node_unit)) + """ """ + str(self._offset_x + int(self._omega * self._time_unit)) + """ """ + str(self._offset_y + int(nodeid * self._node_unit)), file=self._out_fp)
         else:
             for (i,j) in times:
                 print("""2 1 """ + str(linetype) + """ 2 """ + str(color) + """ 7 50 -1 -1 6.000 0 0 7 0 0 2\n \
-          """ + str(self._offset_x + int(i* self._time_unit)) + """ """ + str(self._offset_y + int(self._node_cpt * self._node_unit)) + """ """ + str(self._offset_x + int(j * self._time_unit)) + """ """ + str(self._offset_y + int(self._node_cpt * self._node_unit)))
+          """ + str(self._offset_x + int(i* self._time_unit)) + """ """ + str(self._offset_y + int(nodeid * self._node_unit)) + """ """ + str(self._offset_x + int(j * self._time_unit)) + """ """ + str(self._offset_y + int(nodeid * self._node_unit)), file=self._out_fp)
 
     def addLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
         """
@@ -577,22 +613,24 @@ Single\n\
 
         # Print border lrtb (if any)
         if "l" in border:
-            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2")
-            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u] * self._node_unit - margin) + " " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v] * self._node_unit + margin) + "\n")
+            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"] * self._node_unit - margin) + " " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + margin) + "\n", file=self._out_fp)
         if "r" in border:
-            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2")
-            print(str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[u] * self._node_unit - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v] * self._node_unit + margin) + "\n")
+            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+            print(str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"] * self._node_unit - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + margin) + "\n", file=self._out_fp)
         if "t" in border:
-            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2")
-            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u] * self._node_unit - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[u] * self._node_unit - margin))
+            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"] * self._node_unit - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"] * self._node_unit - margin), file=self._out_fp)
         if "b" in border:
-            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2")
-            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v] * self._node_unit + margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v] * self._node_unit + margin))
+            print("2 1 0 " + str(borderwidth) + " " + str(bordercolor) + " 7 48 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + margin), file=self._out_fp)
 
         if color > -1:
             # Print rectangle
-            print("2 2 0 0 0 " + str(color) + " " + str(depth) + " -1 20 0.000 0 0 -1 0 0 5")
-            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit) - margin) )
+            print("2 2 0 0 0 " + str(color) + " " + str(depth) + " -1 20 0.000 0 0 -1 0 0 5", file=self._out_fp)
+            print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]["id"]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]["id"]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin), file=self._out_fp )
+        
+        self._out_fp.close()
 
     def addTime(self, t, label="", width=1, font=12, color=0):
         """
@@ -685,6 +723,21 @@ Single\n\
 
         # Write "time"
         print("4 2 0 50 -1 0 20 0.0000 4 135 120 " + str(self._offset_x + int(self._omega * self._time_unit)) + " " + str(self._offset_y + timeline_y + 250) + " time\\001")
+
+    def save(self, out_file):
+        """
+            Save stream to fig representation
+        """
+        if not self._streaming:
+            out_fp = open(out_file, "w+")
+            self._out_fp = out_fp
+
+            print(self._header, file=self._out_fp)
+
+            for u in self._nodes:
+                self.printNode(u)
+
+
 
     def __del__(self):
         # Adds white rectangle in background around first node (for EPS bounding box)
