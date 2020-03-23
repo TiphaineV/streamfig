@@ -72,12 +72,17 @@ class StreamFig:
     _nodes = {}
     _node_cpt = 1
 
+    _links = []
+
+    _node_clusters = []
+
     _colors = {}
     _color_cpt = 31
     _directed = False
 
     _streaming = True
     _out_fp = None
+
 
 
     def streaming(func):
@@ -274,10 +279,18 @@ Single\n\
             >>> # Add a right curved link from time 1 to time 3 between nodes u and v
             >>> d.addLink("u", "v", 1, 3, curving=0.3)
         """
-        if self._discrete > 0:
-            self.__addDiscreteLink(u, v, b, e, curving, color, height, width)
-        else:
-            self.__addContinuousLink(u, v, b, e, curving, color, height, width)
+        link = {
+            "u": u,
+            "v": v,
+            "b": b,
+            "e": e,
+            "curving": curving,
+            "color": color,
+            "height": height,
+            "width": width
+        }
+
+        self._links.append(link)
 
     def __addDiscreteLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
         if color in self._colors:
@@ -321,31 +334,51 @@ Single\n\
 
             numnodes = abs(self._nodes[u] - self._nodes[v])
 
+    def printLink(self, link):
 
-    def __addContinuousLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
+        if self._discrete > 0:
+            pass
+        else:
+            self.__printContinuousLink(link)
+
+    def __printContinuousLink(self, link):
+        """
+            Prints link (continuous case)
+        """
+        u = link["u"]
+        v = link["v"]
+        b = link["b"]
+        e = link["e"]
+        color = link["color"]
+        curving = link["curving"]
+        height = link["height"]
+        width = link["width"]
+
+
         if color in self._colors:
             color = self._colors[color]
+
         if self._directed:
-            if self._nodes[u] > self._nodes[v]:
+            if self._nodes[u]["id"] > self._nodes[v]["id"]:
                 (u,v) = (v,u)
                 arrow_type = "0 1"
             else:
                 arrow_type = "1 0"
         else:
-            if self._nodes[u] > self._nodes[v]:
+            if self._nodes[u]["id"] > self._nodes[v]["id"]:
                 (u,v) = (v,u)
             arrow_type = "0 0"
 
         # Draw circles for u and v
-        print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
-        print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
+        print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
+        print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
         
         # Link them
-        x1, y1 = self._offset_x + int(b * self._time_unit), self._offset_y + self._nodes[u]*self._node_unit
+        x1, y1 = self._offset_x + int(b * self._time_unit), self._offset_y + self._nodes[u]["id"]*self._node_unit
         x2 = self._offset_x + int((b + curving) * self._time_unit)
-        y2 = int((self._offset_y + self._nodes[v]*self._node_unit) - 0.5 * (self._nodes[v]-self._nodes[u]) * self._node_unit) 
+        y2 = int((self._offset_y + self._nodes[v]["id"]*self._node_unit) - 0.5 * (self._nodes[v]["id"]-self._nodes[u]["id"]) * self._node_unit) 
         x3 = self._offset_x + int(b * self._time_unit)
-        y3 = self._offset_y + self._nodes[v]*self._node_unit
+        y3 = self._offset_y + self._nodes[v]["id"]*self._node_unit
 
         if self._directed:
             dir_arg1 = "1"
@@ -354,18 +387,19 @@ Single\n\
             dir_arg1 = "0"
             dir_arg2 = "-1.000"
 
-        sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n")
+        print("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n", file=self._out_fp)
         # arrow type
         if self._directed:
-            sys.stdout.write("1 1 3.00 90.00 150.00\n")
-        sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
-        sys.stdout.write("0.000 " + str(dir_arg2) +" 0.000\n")
+            print("1 1 3.00 90.00 150.00", file=self._out_fp)
+        print("%s %s %s %s %s %s" % (x1, y1, x2, y2, x3, y3), file=self._out_fp)
+        print("0.000 " + str(dir_arg2) +" 0.000", file=self._out_fp)
 
-        numnodes = abs(self._nodes[u] - self._nodes[v])
+        numnodes = abs(self._nodes[u]["id"] - self._nodes[v]["id"])
 
         # Add duration
-        print("2 1 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 -1 0 0 2")
-        print(str(self._offset_x + int((b + curving) * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]*self._node_unit + (numnodes*self._node_unit*height))) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]*self._node_unit - (numnodes*self._node_unit*(1-height))))
+        print("2 1 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+        print(str(self._offset_x + int((b + curving) * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit + (numnodes*self._node_unit*height))) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"]*self._node_unit - (numnodes*self._node_unit*(1-height))), file=self._out_fp)
+
 
     def addNodeCluster(self, u, times=[], color=0, width=200):
         """
@@ -389,6 +423,21 @@ Single\n\
             >>> d.addNodeCluster("x", [(2,4)], color=11)
 
         """
+        nc = {
+            "u": u,
+            "times": times,
+            "color": color,
+            "width": width
+        }
+        self._node_clusters.append(nc)
+
+
+    def printNodeCluster(self, nc):
+
+        u = nc["u"]
+        times = nc["times"]
+        color = nc["color"]
+        width = nc["width"]
 
         margin = int(width / 2)
 
@@ -399,13 +448,13 @@ Single\n\
             times = [(self._alpha, self._omega)]
 
         for (i,j) in times:
-            (x1, y1) = ( self._offset_x + int(i * self._time_unit), self._offset_y + int(self._nodes[u]*self._node_unit) - margin )
-            (x2, y2) = ( self._offset_x + int(j * self._time_unit), self._offset_y + int(self._nodes[u]*self._node_unit) - margin ) 
-            (x3, y3) = ( self._offset_x + int(j * self._time_unit), self._offset_y + int(self._nodes[u]*self._node_unit) + margin ) 
-            (x4, y4) = ( self._offset_x + int(i*self._time_unit), self._offset_y + int(self._nodes[u]*self._node_unit) + margin ) 
+            (x1, y1) = ( self._offset_x + int(i * self._time_unit), self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin )
+            (x2, y2) = ( self._offset_x + int(j * self._time_unit), self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin ) 
+            (x3, y3) = ( self._offset_x + int(j * self._time_unit), self._offset_y + int(self._nodes[u]["id"]*self._node_unit) + margin ) 
+            (x4, y4) = ( self._offset_x + int(i*self._time_unit), self._offset_y + int(self._nodes[u]["id"]*self._node_unit) + margin ) 
 
-            print("2 2 0 0 0 " + str(color) + " 51 -1 20 0.000 0 0 -1 0 0 5")
-            print(str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(x3) + " " + str(y3) + " " + str(x4) + " " + str(y4) + " " + str(x1) + " " + str(y1))
+            print("2 2 0 0 0 " + str(color) + " 51 -1 20 0.000 0 0 -1 0 0 5", file=self._out_fp)
+            print(str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(x3) + " " + str(y3) + " " + str(x4) + " " + str(y4) + " " + str(x1) + " " + str(y1), file=self._out_fp)
 
     def addParameter(self, letter, value, color=0, width=1):
         """
@@ -737,7 +786,37 @@ Single\n\
             for u in self._nodes:
                 self.printNode(u)
 
+            for link in self._links:
+                self.printLink(link)
 
+            for nc in self._node_clusters:
+                self.printNodeCluster(nc)
+
+
+    def optimize(self):
+        # Find better node order !
+        NUM_ITER = 10000
+        # Add some early stopping
+
+        distance_sum = lambda x: sum(( abs(self._nodes[l["u"]]["id"] - self._nodes[l["v"]]["id"]) for l in x))
+
+        old_distance_sum = distance_sum(self._links)
+        orig_distance_sum = old_distance_sum
+        import random
+
+        for i in range(0, NUM_ITER):
+            u, v = random.sample(self._nodes.keys(), 2)
+            self._nodes[u], self._nodes[v] = self._nodes[v], self._nodes[u]
+            new_arrangement_sum = distance_sum(self._links)
+
+            if not new_arrangement_sum < old_distance_sum:
+                # Revert permutation
+                self._nodes[v], self._nodes[u] = self._nodes[u], self._nodes[v]
+            else:
+                # Update best score and keep permutation
+                old_distance_sum = new_arrangement_sum
+
+        print("%d %d (%d percent improvement) " % (orig_distance_sum, old_distance_sum, orig_distance_sum/old_distance_sum*100))
 
     def __del__(self):
         # Adds white rectangle in background around first node (for EPS bounding box)
