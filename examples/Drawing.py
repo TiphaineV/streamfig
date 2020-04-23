@@ -247,6 +247,28 @@ Single\n\
                 if self.stdout_print:
                    print(rectangle)
 
+        if glyph == "cross":
+            time_node_mark = "2 1 0 "+ str(size) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2"
+            delta = 15 * size + 50
+            self.fig_buffer += time_node_mark + '\n'
+            if self.stdout_print:
+                print(time_node_mark)
+
+            time_node_mark = str(self.offset_x + int(t * self.time_unit) - delta ) + " " + str(self.offset_y + self.nodes[u]*self.node_unit - delta) + " " + str(self.offset_x + int(t * self.time_unit) + delta ) + " " + str(self.offset_y + self.nodes[u]*self.node_unit + delta)
+            self.fig_buffer += time_node_mark + '\n'
+            if self.stdout_print:
+                print(time_node_mark)
+
+            time_node_mark = "2 1 0 "+ str(size) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2"
+            self.fig_buffer += time_node_mark + '\n'
+            if self.stdout_print:
+                print(time_node_mark)
+
+            time_node_mark = str(self.offset_x + int(t * self.time_unit) - delta ) + " " + str(self.offset_y + self.nodes[u]*self.node_unit + delta) + " " + str(self.offset_x + int(t * self.time_unit) + delta ) + " " + str(self.offset_y + self.nodes[u]*self.node_unit - delta)
+            self.fig_buffer += time_node_mark + '\n'
+            if self.stdout_print:
+                print(time_node_mark)
+
 
     def addDiscreteLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=None, link_width=3, anchor_width=3):
         if width:
@@ -378,7 +400,7 @@ Single\n\
         if self.stdout_print:
             print(duration)
 
-    def addNodeCluster(self, u, times=[], color=0, width=200):
+    def addNodeCluster(self, u, times=[], color=0, width=200, depth=51):
 
         margin = int(width / 2)
 
@@ -394,7 +416,7 @@ Single\n\
             (x3, y3) = ( self.offset_x + int(j * self.time_unit), self.offset_y + int(self.nodes[u]*self.node_unit) + margin ) 
             (x4, y4) = ( self.offset_x + int(i*self.time_unit), self.offset_y + int(self.nodes[u]*self.node_unit) + margin ) 
 
-            cluster = "2 2 0 0 0 " + str(color) + " 51 -1 20 0.000 0 0 -1 0 0 5"
+            cluster = "2 2 0 0 0 " + str(color) + " " + str(depth) + " -1 20 0.000 0 0 -1 0 0 5"
             self.fig_buffer += cluster + '\n'
             if self.stdout_print:
                 print(cluster)
@@ -760,7 +782,7 @@ Single\n\
 
 
 
-    def addMeasures(self, point_list, width=1, color=0, height=4, ymin=None, ymax=None, x_ticks=2, y_ticks=3, significant_digit=4, title='Value', tick_angle= 0.6, font_size=15, invert_y_axis=True):
+    def addPlot(self, point_list, width=1, color=0, height=4, ymin=None, ymax=None, x_ticks=2, y_ticks=3, significant_digit=4, title='Value', tick_angle= 0.6, font_size=15, invert_y_axis=True):
 
         point_list = sorted(point_list, key=lambda x:x[0])
 
