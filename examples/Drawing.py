@@ -39,7 +39,7 @@ class Drawing:
     colors = {}
     color_cpt = 31
 
-    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, stdout_print=False):
+    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, stdout_print=True):
         self.stdout_print = stdout_print
         self.fig_buffer = ""
 
