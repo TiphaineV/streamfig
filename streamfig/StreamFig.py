@@ -125,7 +125,7 @@ Single\n\
 -2\n\
 1200 2\n"""
         if self._streaming:
-            print(header)
+            print(self._header)
 
 
     def setLineType(def_linetype):
