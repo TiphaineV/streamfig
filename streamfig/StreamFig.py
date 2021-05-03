@@ -78,7 +78,7 @@ class StreamFig:
 
     _colors = {}
     _color_cpt = 31
-    _directed = False
+    # _directed = False
 
     _streaming = True
     _out_fp = None
@@ -108,6 +108,9 @@ class StreamFig:
         self._time_unit = time_width
         self._discrete = discrete
         self._directed = directed
+
+        self._timeline = { "display": False, "ticks": 2, "label": "time", "marks": [] }
+        self._paths = []
 
         self.linetype = 2
 
@@ -369,16 +372,44 @@ Single\n\
                 (u,v) = (v,u)
             arrow_type = "0 0"
 
+            
+
+
         # Draw circles for u and v
         print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
         print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
         
         # Link them
-        x1, y1 = self._offset_x + int(b * self._time_unit), self._offset_y + self._nodes[u]["id"]*self._node_unit
-        x2 = self._offset_x + int((b + curving) * self._time_unit)
-        y2 = int((self._offset_y + self._nodes[v]["id"]*self._node_unit) - 0.5 * (self._nodes[v]["id"]-self._nodes[u]["id"]) * self._node_unit) 
-        x3 = self._offset_x + int(b * self._time_unit)
-        y3 = self._offset_y + self._nodes[v]["id"]*self._node_unit
+        spline_coords = []
+
+        if self._nodes[u]["id"] != self._nodes[v]["id"]:
+
+            x1, y1 = self._offset_x + int(b * self._time_unit), self._offset_y + self._nodes[u]["id"]*self._node_unit
+            x2 = self._offset_x + int((b + curving) * self._time_unit)
+            y2 = int((self._offset_y + self._nodes[v]["id"]*self._node_unit) - 0.5 * (self._nodes[v]["id"]-self._nodes[u]["id"]) * self._node_unit) 
+            x3 = self._offset_x + int(b * self._time_unit)
+            y3 = self._offset_y + self._nodes[v]["id"]*self._node_unit
+            spline_coords.append((x1, y1))
+            spline_coords.append((x2, y2))
+            spline_coords.append((x3, y3))
+        else:
+            # self loop case
+            base_x, base_y = self._offset_x + int(b * self._time_unit), self._offset_y + self._nodes[u]["id"]*self._node_unit 
+            spline_coords.append((base_x, base_y))            
+
+            x, y = base_x + ( 0.5 * self._time_unit ), base_y - 0.25 * self._node_unit
+            spline_coords.append((int(x), int(y)))    
+
+            x, y = base_x, base_y - 0.5 * self._node_unit 
+            spline_coords.append((int(x), int(y)))
+
+            x, y = base_x - (0.5 * self._time_unit ), base_y - 0.25 * self._node_unit
+            spline_coords.append((int(x), int(y)))
+
+            x, y = base_x, base_y 
+            spline_coords.append((x, y))     
+
+
 
         if self._directed:
             dir_arg1 = "1"
@@ -386,13 +417,19 @@ Single\n\
         else:
             dir_arg1 = "0"
             dir_arg2 = "-1.000"
+        
+        print(f"3 2 0 {width} {color} 7 50 -1 -1 0.000 0 {arrow_type} {len(spline_coords)}", file=self._out_fp)
 
-        print("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n", file=self._out_fp)
         # arrow type
         if self._directed:
             print("1 1 3.00 90.00 150.00", file=self._out_fp)
-        print("%s %s %s %s %s %s" % (x1, y1, x2, y2, x3, y3), file=self._out_fp)
-        print("0.000 " + str(dir_arg2) +" 0.000", file=self._out_fp)
+        
+        # Print spline coordinates
+        print(" ".join([ f"{x} {y}" for x,y in spline_coords ]), file=self._out_fp)
+
+        # more arrow properties 
+        print("0.000 " + str(dir_arg2) +" 0.000 1.000 0.000", file=self._out_fp)
+        print("# end edge", file=self._out_fp)
 
         numnodes = abs(self._nodes[u]["id"] - self._nodes[v]["id"])
 
@@ -585,20 +622,20 @@ Single\n\
         t0 = path[0][0]
         u0 = path[0][1]
         xi = self._offset_x + int(start * self._time_unit)
-        yi = self._offset_y + self._nodes[u0] * self._node_unit
+        yi = self._offset_y + self._nodes[u0]["id"] * self._node_unit
             
         xj = self._offset_x + int((t0) * self._time_unit) 
-        yj = self._offset_y + self._nodes[u0] * self._node_unit
+        yj = self._offset_y + self._nodes[u0]["id"] * self._node_unit
 
 
         coords = [(xi,yi), (xj,yj)]
 
         for (t,u,v) in path:
             xi = self._offset_x + int(t * self._time_unit)
-            yi = self._offset_y + self._nodes[u] * self._node_unit
+            yi = self._offset_y + self._nodes[u]["id"] * self._node_unit
             
             xj = self._offset_x + int((t + gamma) * self._time_unit) 
-            yj = self._offset_y + self._nodes[v] * self._node_unit
+            yj = self._offset_y + self._nodes[v]["id"] * self._node_unit
             
             coords.append((xi,yi))
             coords.append((xj,yj))
@@ -606,15 +643,24 @@ Single\n\
         tk = path[-1][0]
         vk = path[-1][2]
         xi = self._offset_x + int(tk * self._time_unit)
-        yi = self._offset_y + self._nodes[vk] * self._node_unit
+        yi = self._offset_y + self._nodes[vk]["id"] * self._node_unit
             
         xj = self._offset_x + int((end) * self._time_unit) 
-        yj = self._offset_y + self._nodes[vk] * self._node_unit
+        yj = self._offset_y + self._nodes[vk]["id"] * self._node_unit
         coords.append((xi,yi))
         coords.append((xj,yj))
 
-        print("2 1 0 " + str(width) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 " + str(len(coords)))
-        print(" ".join([ " ".join(map(str, i)) for i in coords ] ))
+        self._paths.append({
+            "width": width,
+            "color": color,
+            "depth": depth,
+            "coords": coords
+            })
+
+    def printPath(self, path):
+        width, color, depth, coords = path["width"], path["color"], path["depth"], path["coords"]
+        print(f"2 1 0 {width} {color} 7 {depth} -1 -1 0.000 0 0 -1 0 0 " + str(len(coords)), file=self._out_fp)
+        print(" ".join([ " ".join(map(str, i)) for i in coords ] ), file=self._out_fp)
 
     def addRectangle(self, u, v, b, e, width=100, depth=51, color=0, border="", bordercolor=0, borderwidth=2):
         """
@@ -711,7 +757,17 @@ Single\n\
         # Add label if any
         print("4 0 " + str(color) + " 50 -1 0 " + str(font) + " 0.0000 4 135 120 " + str(self._offset_x + int(t * self._time_unit) - (2 * font * len(label))) + " " + str(self._offset_y - 175 + int(2 * self._node_unit)) + " " + str(label) + "\\001")
 
-    def addTimeLine(self, ticks=1, marks=None):
+
+    def addTimeLine(self, ticks=2, label="time", marks=None):
+        self._timeline = {
+            "display": True,
+            "ticks": ticks,
+            "label": label,
+            "marks": []
+        }
+        
+
+    def printTimeLine(self):
         """
             Adds a time line at the bottom of the stream graph.
 
@@ -731,6 +787,10 @@ Single\n\
             >>> d.addTimeLine(ticks=2, marks=[(2.5, "a")])
         """
 
+        ticks = self._timeline["ticks"]
+        label = self._timeline["label"]
+        marks = self._timeline["marks"]
+        
         timeline_y = self._node_cpt * self._node_unit + int(self._node_unit / 2)
         
         vals = []
@@ -759,19 +819,19 @@ Single\n\
         else:
             start, end = self._alpha, self._omega     
 
-        print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 1 0 2")
-        print("1 1 1.00 60.00 120.00")
-        print(str(self._offset_x + int(start * self._time_unit)) + " " + str(self._offset_y + timeline_y) + " " + str(self._offset_x + int(end * self._time_unit)) + " " + str(self._offset_y + timeline_y))
+        print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 1 0 2", file=self._out_fp)
+        print("1 1 1.00 60.00 120.00", file=self._out_fp)
+        print(str(self._offset_x + int(start * self._time_unit)) + " " + str(self._offset_y + timeline_y) + " " + str(self._offset_x + int(end * self._time_unit)) + " " + str(self._offset_y + timeline_y), file=self._out_fp)
 
         # Time ticks
         for (i,j) in vals:
-            print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 0 0 2")
-            print(str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y) + " " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y + 30))
+            print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+            print(str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y) + " " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y + 30), file=self._out_fp)
             if i < self._omega - 1:
-                print("4 1 0 50 -1 0 20 0.0000 4 135 120 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y + 250) + " " + str(j) + "\\001")
+                print("4 1 0 50 -1 0 20 0.0000 4 135 120 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + timeline_y + 250) + " " + str(j) + "\\001", file=self._out_fp)
 
         # Write "time"
-        print("4 2 0 50 -1 0 20 0.0000 4 135 120 " + str(self._offset_x + int(self._omega * self._time_unit)) + " " + str(self._offset_y + timeline_y + 250) + " time\\001")
+        print("4 2 0 50 -1 0 20 0.0000 4 135 120 " + str(self._offset_x + int(self._omega * self._time_unit)) + " " + str(self._offset_y + timeline_y + 250) + " " + label + "\\001", file=self._out_fp)
 
     def save(self, out_file):
         """
@@ -791,6 +851,12 @@ Single\n\
 
             for nc in self._node_clusters:
                 self.printNodeCluster(nc)
+
+            for p in self._paths:
+                self.printPath(p)
+
+            if self._timeline["display"]:
+                self.printTimeLine()
 
 
     def optimize(self):
