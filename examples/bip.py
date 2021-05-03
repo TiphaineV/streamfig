@@ -1,6 +1,8 @@
-from Drawing import *
+import streamfig
 
-s = Drawing(alpha=0, omega=10)
+print(streamfig)
+
+s = StreamFig(alpha=0, omega=10)
 
 s.addColor("red", "#FF8080")
 

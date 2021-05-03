@@ -1,6 +1,6 @@
-from Drawing import *
+import streamfig
 
-s = Drawing(alpha=0, omega=10)
+s = streamfig.StreamFig.StreamFig(alpha=0, omega=10, streaming=False)
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
 s.addColor("tGreen", "#98DF8A") # 152,223,138
@@ -26,3 +26,5 @@ s.addPath(((4,"w","v"), (5, "v", "u")), 4, 5, color="tPink", width=6)
 #s.addTimeIntervalMark(1,5,width=6,color=11)
 
 s.addTimeLine(ticks=2)
+
+s.save("betweeness-2.fig")
