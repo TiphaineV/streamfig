@@ -2,3 +2,7 @@
 *.eps
 *.png
 *.pyc
+build/
+dist/
+venv/
+wip/
