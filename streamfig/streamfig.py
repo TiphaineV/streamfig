@@ -53,7 +53,6 @@ class StreamFig:
         >>> d = Drawing(alpha=0, omega=6, discrete=2)
     """
 
-    __version__ = '1.1.1'
     _alpha = 0.0
     _omega = 0.0
     _discrete = -1
@@ -78,14 +77,10 @@ class StreamFig:
 
     _node_clusters = []
 
-    _colors = {}
-    _color_cpt = 31
     # _directed = False
 
-    _streaming = True
+    _streaming = False
     _out_fp = None
-
-
 
     def streaming(func):
         """
@@ -101,7 +96,7 @@ class StreamFig:
 
 
 
-    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False, streaming=True):
+    def __init__(self, alpha=0.0, omega=10.0, time_width=500, discrete=0, directed=False, streaming=False):
 
         self._streaming = streaming
 
@@ -113,8 +108,13 @@ class StreamFig:
 
         self._timeline = { "display": False, "ticks": 2, "label": "time", "marks": [] }
         self._paths = []
+        self._colors = {}
+        self._color_cpt = 31
 
         self.linetype = 2
+        
+        self._timenodemarks = []
+        self._rectangles = []
 
         # Useful predefined colors
         # self.addColor("grey", "#888888")
@@ -144,7 +144,7 @@ Single\n\
 
         self.linetype = def_linetype
 
-    def addColor(self, name, hex):
+    def addColor(self, name, hex_code):
         """
             Adds a new RGB color for use.
 
@@ -159,9 +159,12 @@ Single\n\
         """
 
         self._color_cpt += 1
-        self._colors[name] = self._color_cpt
+        self._colors[name] = { "id": self._color_cpt, "hex": hex_code }
 
-        print("0 " + str(self._color_cpt) + " " + str(hex))
+    
+    def printColors(self):
+        for c in self._colors:
+            print("0 " + str(self._colors[c]["id"]) + " " + str(self._colors[c]["hex"]), file=self._out_fp)
 
     def addNode(self, u, times=[], color=0, linetype=None):
         """
@@ -191,7 +194,7 @@ Single\n\
     def __addDiscreteNode(self, u, times=[], color="grey", width=1):
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         if self._node_cpt == 1:
             self._first_node = u
@@ -219,7 +222,7 @@ Single\n\
 
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         if self._node_cpt == 1:
             self._first_node = u
@@ -299,7 +302,7 @@ Single\n\
 
     def __addDiscreteLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
         if self._directed:
             if self._nodes[u] > self._nodes[v]:
                 (u,v) = (v,u)
@@ -361,7 +364,7 @@ Single\n\
 
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         if self._directed:
             if self._nodes[u]["id"] > self._nodes[v]["id"]:
@@ -481,7 +484,7 @@ Single\n\
         margin = int(width / 2)
 
         if color in self._colors:
-            color = self._colors[color]        
+            color = self._colors[color]["id"]  
 
         if len(times) == 0:
             times = [(self._alpha, self._omega)]
@@ -516,7 +519,7 @@ Single\n\
         """
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         #?Place at top? Confusing with time intervals...
         pos_segment_y = self._offset_y + (self._nodes[self._first_node] * self._node_unit) - (150 * self._num_time_intervals) - 400
@@ -541,7 +544,7 @@ Single\n\
 
     def addNodeIntervalMark(self, u, v, color=0, width=1):
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         pos_segment_x = self._offset_x - (150 * self._num_node_intervals) - 600
 
@@ -573,13 +576,29 @@ Single\n\
             >>> d.addTimeNodeMark(2, "u", color=11, width=3)
         """
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
-        print("2 1 0 "+ str(width) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2")
-        print(str(self._offset_x + int(t * self._time_unit) - 50 ) + " " + str(self._offset_y + self._nodes[v]*self._node_unit - 50) + " " + str(self._offset_x + int(t * self._time_unit) + 50 ) + " " + str(self._offset_y + self._nodes[v]*self._node_unit + 50))
+        self._timenodemarks.append({
+            "t": t,
+            "v": v,
+            "color": color,
+            "width": width,
+            "depth": depth
+        })
 
-        print("2 1 0 "+ str(width) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2")
-        print(str(self._offset_x + int(t * self._time_unit) - 50 ) + " " + str(self._offset_y + self._nodes[v]*self._node_unit + 50) + " " + str(self._offset_x + int(t * self._time_unit) + 50 ) + " " + str(self._offset_y + self._nodes[v]*self._node_unit - 50))
+    def printTimeNodeMark(self, tnm):
+
+        t = tnm["t"]
+        v = tnm["v"]
+        color = tnm["color"]
+        width = tnm["width"]
+        depth = tnm["depth"]
+
+        print("2 1 0 "+ str(width) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+        print(str(self._offset_x + int(t * self._time_unit) - 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit - 50) + " " + str(self._offset_x + int(t * self._time_unit) + 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + 50), file=self._out_fp)
+
+        print("2 1 0 "+ str(width) + " " + str(color) + " 7 " + str(depth) + " -1 -1 0.000 0 0 -1 0 0 2", file=self._out_fp)
+        print(str(self._offset_x + int(t * self._time_unit) - 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + 50) + " " + str(self._offset_x + int(t * self._time_unit) + 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit - 50), file=self._out_fp)
 
     def addTimeIntervalMark(self, b, e, color=0, width=1):
         pos_segment_y = self._offset_y + (self._nodes[self._first_node] * self._node_unit) - (100 * self._num_time_intervals) - 200
@@ -619,7 +638,7 @@ Single\n\
         """
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
         
         t0 = path[0][0]
         u0 = path[0][1]
@@ -701,12 +720,40 @@ Single\n\
             >>> d.addRectangle("u", "v", 2, 6, color=11, border="lrb")
         """
 
+        self._rectangles.append(
+            {
+                "u": u,
+                "v": v,
+                "b": b,
+                "e": e,
+                "width": width,
+                "depth": depth,
+                "color": color,
+                "border": border,
+                "bordercolor": bordercolor,
+                "borderwidth": borderwidth
+            }        
+        )
+
+    def printRectangle(self, r):
+
+        u = r["u"]
+        v = r["v"]
+        b = r["b"]
+        e = r["e"]
+        width = r["width"]
+        depth = r["depth"]
+        color = r["color"]
+        border = r["border"]
+        bordercolor = r["bordercolor"]
+        borderwidth = r["borderwidth"]
+
         margin = int(width/2)
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
         if bordercolor in self._colors:
-            bordercolor = self._colors[bordercolor]
+            bordercolor = self._colors[bordercolor]["id"]
 
         # Print border lrtb (if any)
         if "l" in border:
@@ -727,7 +774,7 @@ Single\n\
             print("2 2 0 0 0 " + str(color) + " " + str(depth) + " -1 20 0.000 0 0 -1 0 0 5", file=self._out_fp)
             print(str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin) + " " + str(self._offset_x + int(e * self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]["id"]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[v]["id"]*self._node_unit) + margin) + " " + str(self._offset_x + int(b*self._time_unit)) + " " + str(self._offset_y + int(self._nodes[u]["id"]*self._node_unit) - margin), file=self._out_fp )
         
-        self._out_fp.close()
+        # self._out_fp.close()
 
     def addTime(self, t, label="", width=1, font=12, color=0):
         """
@@ -749,7 +796,7 @@ Single\n\
             self._num_time_intervals = 1
 
         if color in self._colors:
-            color = self._colors[color]
+            color = self._colors[color]["id"]
 
         linetype = 1
 
@@ -844,6 +891,8 @@ Single\n\
             self._out_fp = out_fp
 
             print(self._header, file=self._out_fp)
+            
+            self.printColors()
 
             for u in self._nodes:
                 self.printNode(u)
@@ -856,6 +905,12 @@ Single\n\
 
             for p in self._paths:
                 self.printPath(p)
+
+            for tnm in self._timenodemarks:
+                self.printTimeNodeMark(tnm)
+
+            for r in self._rectangles:
+                self.printRectangle(r)
 
             if self._timeline["display"]:
                 self.printTimeLine()
@@ -889,6 +944,7 @@ Single\n\
     def __del__(self):
         # Adds white rectangle in background around first node (for EPS bounding box)
         self.addRectangle(self._first_node, self._first_node, self._alpha, self._omega, width=300,depth=60, color=7)
+        self._out_fp.close()
 
 # main
 if __name__ == '__main__':
