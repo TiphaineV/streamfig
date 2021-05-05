@@ -115,6 +115,9 @@ class StreamFig:
         
         self._timenodemarks = []
         self._rectangles = []
+        self._node_intervals = []
+        self._time_intervals = []
+        self._parameters = []
 
         # Useful predefined colors
         # self.addColor("grey", "#888888")
@@ -518,11 +521,25 @@ Single\n\
             >>> d.addParameter("d", 3)
         """
 
+        self._parameters.append({
+            "letter": letter,
+            "value": value,
+            "color": color,
+            "width": width
+        })
+
+
+    def printParameter(self, p):
+        letter = p["letter"]
+        value = p["value"]
+        color = p["color"]
+        width = p["width"]
+
         if color in self._colors:
             color = self._colors[color]["id"]
 
         #?Place at top? Confusing with time intervals...
-        pos_segment_y = self._offset_y + (self._nodes[self._first_node] * self._node_unit) - (150 * self._num_time_intervals) - 400
+        pos_segment_y = self._offset_y + (self._nodes[self._first_node]["id"] * self._node_unit) - (150 * self._num_time_intervals) - 400
         # Place at bottom instead? Then needs to be written last.
         # pos_segment_y = self._offset_y + self._node_cpt * self._node_unit + 2*self._node_unit
 
@@ -531,10 +548,10 @@ Single\n\
         else:
             paramoffset = 200
 
-        print("2 1 " + str(color) + " " + str(width) + " 0 7 50 -1 -1 0.000 0 0 -1 1 1 2")
-        print("13 1 1.00 60.00 120.00")
-        print("13 1 1.00 60.00 120.00")
-        print(str(self._offset_x + (self._totalval_parameters * self._time_unit  + (self._num_parameters * paramoffset))) + " " + str(pos_segment_y) + " " + str(self._offset_x + int(value * self._time_unit) + (self._totalval_parameters * self._time_unit + (self._num_parameters * paramoffset))) + " " + str(pos_segment_y))
+        print("2 1 " + str(color) + " " + str(width) + " 0 7 50 -1 -1 0.000 0 0 -1 1 1 2", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print(str(self._offset_x + (self._totalval_parameters * self._time_unit  + (self._num_parameters * paramoffset))) + " " + str(pos_segment_y) + " " + str(self._offset_x + int(value * self._time_unit) + (self._totalval_parameters * self._time_unit + (self._num_parameters * paramoffset))) + " " + str(pos_segment_y), file=self._out_fp)
 
         valtocenter = int(value * self._time_unit / 2) - (200 + (50 * max(int(value) - 2, 0))) 
 
@@ -543,15 +560,29 @@ Single\n\
         self._num_parameters += 1
 
     def addNodeIntervalMark(self, u, v, color=0, width=1):
+        self._node_intervals.append({
+            "u": u,
+            "v": v,
+            "color": color,
+            "width": width
+        })
+        
+
+    def printNodeIntervalMark(self, nim):
+        u = nim["u"]
+        v = nim["v"]
+        color = nim["color"]
+        width = nim["width"]
+
         if color in self._colors:
             color = self._colors[color]["id"]
 
         pos_segment_x = self._offset_x - (150 * self._num_node_intervals) - 600
 
-        print("2 1 " + str(color) + " " + str(width) + " 0 7 50 -1 -1 0.000 0 0 -1 1 1 2")
-        print("13 1 1.00 60.00 120.00")
-        print("13 1 1.00 60.00 120.00")
-        print(str(pos_segment_x) + " " + str(self._offset_y + self._nodes[u] * self._node_unit) + " " + str(pos_segment_x) + " " + str(self._offset_y + self._nodes[v] * self._node_unit))
+        print(f"2 1 {color} {width} 0 7 50 -1 -1 0.000 0 0 -1 1 1 2", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print(f"{pos_segment_x} {self._offset_y + self._nodes[u]['id'] * self._node_unit}  {pos_segment_x} {self._offset_y + self._nodes[v]['id'] * self._node_unit}", file=self._out_fp)
         self._num_node_intervals += 1
 
 
@@ -601,12 +632,25 @@ Single\n\
         print(str(self._offset_x + int(t * self._time_unit) - 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit + 50) + " " + str(self._offset_x + int(t * self._time_unit) + 50 ) + " " + str(self._offset_y + self._nodes[v]["id"] * self._node_unit - 50), file=self._out_fp)
 
     def addTimeIntervalMark(self, b, e, color=0, width=1):
-        pos_segment_y = self._offset_y + (self._nodes[self._first_node] * self._node_unit) - (100 * self._num_time_intervals) - 200
+        self._time_intervals.append({
+            "b": b,
+            "e": e,
+            "color": color,
+            "width": width
+        })
 
-        print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 1 1 2")
-        print("13 1 1.00 60.00 120.00")
-        print("13 1 1.00 60.00 120.00")
-        print(str(self._offset_x + b * self._time_unit) + " " + str(pos_segment_y) + " " + str(self._offset_x + (e * self._time_unit)) + " " + str(pos_segment_y))
+    def printTimeIntervalMark(self, tim):
+        b = tim["b"]
+        e = tim["e"]
+        color = tim["color"]
+        width = tim["width"]
+
+        pos_segment_y = self._offset_y + (self._nodes[self._first_node]["id"] * self._node_unit) - (100 * self._num_time_intervals) - 200
+
+        print("2 1 0 1 0 7 50 -1 -1 0.000 0 0 -1 1 1 2", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print("13 1 1.00 60.00 120.00", file=self._out_fp)
+        print(str(self._offset_x + b * self._time_unit) + " " + str(pos_segment_y) + " " + str(self._offset_x + (e * self._time_unit)) + " " + str(pos_segment_y), file=self._out_fp)
         self._num_time_intervals += 1
 
     def addPath(self, path, start, end, gamma=0, color=0, width=1, depth=51):
@@ -911,6 +955,15 @@ Single\n\
 
             for r in self._rectangles:
                 self.printRectangle(r)
+
+            for nim in self._node_intervals:
+                self.printNodeIntervalMark(nim)
+
+            for tim in self._time_intervals:
+                self.printTimeIntervalMark(tim)
+
+            for p in self._parameters:
+                self.printParameter(p)
 
             if self._timeline["display"]:
                 self.printTimeLine()
