@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("grey", "#BBBBBB")
 s.addColor("white", "#FFFFFF")
@@ -22,3 +22,4 @@ s.addRectangle("b","d",7,8,color="red")
 
 s.addTimeLine(ticks=2)
 
+s.save("paths.fig")

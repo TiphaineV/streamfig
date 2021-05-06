@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("tPink", "#FF9896") # 255, 152,150
 
@@ -31,3 +31,4 @@ s.addNodeCluster("c", [(4.5,6)], color=11, width=60)
 s.addNodeCluster("d", [(2,2)], color=11, width=60)
 
 s.addTimeLine(ticks=2)
+s.save("tree-1.fig")

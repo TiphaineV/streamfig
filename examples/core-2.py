@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing(alpha=0, omega=10)
+s = StreamFig(alpha=0, omega=10)
 
 s.addNode("a",[(4,5)])
 s.addNode("b",[(4,5),(7,9)])
@@ -16,4 +16,4 @@ s.addLink("a", "b", 4, 5)
 s.addLink("b", "c", 7, 9)
 
 s.addTimeLine(ticks=2)
-
+s.save("core-2.fig")

@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("grey", "#BBBBBB")
 s.addColor("white", "#FFFFFF")
@@ -19,3 +19,4 @@ s.addLink("a","c",4.5,7.5,height=0.4)
 
 s.addTimeLine(ticks=2)
 
+s.save("ex-ref-1.fig")

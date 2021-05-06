@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing()
+sg = StreamFig()
 
 sg.addNode("a", [(0,3), (7,10)])
 sg.addNode("b")
@@ -20,4 +20,4 @@ sg.addNodeCluster("c", [(2,3)], width=100, color=26)
 sg.addNodeCluster("b", [(7,9)], width=100, color=26)
 
 sg.addTimeLine(ticks=2)
-
+sg.save("cluster-neighborhood.fig")

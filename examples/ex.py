@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing(alpha=0, omega=10, discrete=1.5)
+s = StreamFig(alpha=0, omega=10, discrete=1.5)
 
 s.addColor("grey", "#888888")
 s.addColor("red", "#ff0000")
@@ -17,3 +17,4 @@ s.addNodeCluster("u", [(6,7.5)], color="red")
 s.addLink("u", "v", 1.5, 6)
 s.addLink("u", "x", 1.5, 1.5, curving=0.2)
 s.addLink("v", "y", 1.5, 1.5, curving=-0.2)
+s.save("ex.fig")

@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing(alpha=0, omega=10)
+s = StreamFig(alpha=0, omega=10)
 
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
@@ -22,3 +22,4 @@ s.addLink("a", "b", 8, 9)
 s.addLink("b", "c", 2, 7)
 
 s.addTimeLine(ticks=2)
+s.save("bip-proj.fig")

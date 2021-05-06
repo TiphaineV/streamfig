@@ -1,7 +1,7 @@
-from Drawing import *
+from streamfig import *
 
-#s = Drawing(alpha=0, omega=5)
-s = Drawing(alpha=1, omega=9)
+#s = StreamFig(alpha=0, omega=5)
+s = StreamFig(alpha=1, omega=9)
 
 s.addNode("a", [(1,9)])
 s.addNode("b", [(1,9)])
@@ -16,3 +16,4 @@ s.addLink("b","c",3,9)
 s.addTimeLine(ticks=2)
 #s.addParameter("D", 1)
 
+s.save("delta-2.fig")

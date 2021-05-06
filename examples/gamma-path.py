@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing(omega=12)
+sg = StreamFig(omega=12)
 
 sg.addNode("a", [(0,4)])
 sg.addNode("b", [(2,8), (10,12)])
@@ -16,3 +16,4 @@ sg.addPath([(3,"a","b"), (6,"b","c"), (9, "c","b")], 1, 11, gamma=2, width=3, co
 
 sg.addTimeLine(ticks=2)
 sg.addParameter("g", 2)
+sg.save("gamma-path.fig")

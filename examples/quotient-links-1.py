@@ -2,9 +2,9 @@
 # Dark green = 12
 # Purple = 21
 # Pink = 27
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addNode("a")
 s.addNode("b")
@@ -20,3 +20,4 @@ s.addLink("b", "d", 3, 5, color=27, height=0.6)
 s.addLink("c", "d", 7, 10, color=21)
 
 s.addTimeLine(ticks=2)
+s.save("quotient-links-1.fig")

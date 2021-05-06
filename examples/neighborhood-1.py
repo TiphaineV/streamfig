@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("grey", "#BBBBBB")
 s.addColor("white", "#FFFFFF")
@@ -22,3 +22,4 @@ s.addNodeCluster("c",[(4.5,7.5)],color=11,width=100)
 
 s.addTimeLine(ticks=2)
 
+s.save("neighborhood-1.fig")

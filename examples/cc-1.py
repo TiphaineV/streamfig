@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("grey", "#BBBBBB")
 s.addColor("white", "#FFFFFF")
@@ -23,4 +23,4 @@ s.addNodeCluster("b",[(1,8)],color=11,width=100)
 s.addNodeCluster("d",[(6,9)],color=11,width=100)
 
 s.addTimeLine(ticks=2)
-
+s.save("cc-1.fig")

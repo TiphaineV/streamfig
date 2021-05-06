@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
@@ -44,3 +44,4 @@ s.addLink("f", "g", 0, 2)
 s.addLink("f", "g", 8.5, 9.5)
 
 s.addTimeLine(ticks=2)
+s.save("weakly-connected.fig")

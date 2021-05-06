@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing(alpha=0, omega=10)
+sg = StreamFig(alpha=0, omega=10)
 sg.addNode("a")
 sg.addNode("b")
 sg.addNode("c")
@@ -19,3 +19,4 @@ sg.addNodeCluster("c",[(3,8)],color=11,width=100)
 
 sg.addTimeLine(ticks=2)
 
+sg.save("node-substreams-1.fig")

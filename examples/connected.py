@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("tRed", "#FF9896")
 
@@ -38,3 +38,4 @@ s.addRectangle("b", "b", 9, 10, color=-1, bordercolor="tRed", border="lrtb")
 
 
 s.addTimeLine()
+s.save("connected.fig")

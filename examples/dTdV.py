@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addNode("a")
 s.addNode("b")
@@ -10,3 +10,4 @@ s.addLink("a","b", 5, 10)
 s.addLink("b","c", 0, 5)
 
 s.addTimeLine(ticks=2)
+s.save("dTdV.fig")

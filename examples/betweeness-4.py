@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import StreamFig
 
-s = Drawing(alpha=0, omega=8)
+s = StreamFig(alpha=0, omega=8, streaming=False)
 s.addColor("red", "#FF0000")
 
 s.addNode("u")
@@ -28,3 +28,4 @@ s.addPath(((1,"u","x"), (2.5,"x","v"), (4.5, "v", "y"), (6, "y", "w")), 1, 6, co
 s.addTimeNodeMark(3.5,"v",color="red",width=4)
 
 s.addTimeLine(ticks=2)
+s.save("betweeness-4.fig")

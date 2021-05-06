@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing()
+sg = StreamFig()
 
 sg.addNode("u")
 sg.addNode("v")
@@ -15,3 +15,4 @@ sg.addNodeCluster("v", [(0,6)], color=28)
 sg.addNodeCluster("w", [(0,6)], color=11)
 
 sg.addTimeLine(ticks=2)
+sg.save("reachability-2.fig")

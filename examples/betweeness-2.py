@@ -1,6 +1,6 @@
 import streamfig
 
-s = streamfig.StreamFig.StreamFig(alpha=0, omega=10, streaming=False)
+s = streamfig.StreamFig(alpha=0, omega=10, streaming=False)
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
 s.addColor("tGreen", "#98DF8A") # 152,223,138

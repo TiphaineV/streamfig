@@ -1,8 +1,6 @@
 import streamfig
 
-print(streamfig)
-
-s = StreamFig(alpha=0, omega=10)
+s = streamfig.StreamFig(alpha=0, omega=10)
 
 s.addColor("red", "#FF8080")
 
@@ -26,3 +24,4 @@ s.addLink("c", "u", 1, 5, height=0.55)
 s.addLink("c", "v", 0, 8)
 
 s.addTimeLine(ticks=2)
+s.save("bip.fig")

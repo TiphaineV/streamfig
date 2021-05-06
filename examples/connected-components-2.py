@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
@@ -42,4 +42,4 @@ s.addRectangle("b", "b", 9.05, 10, color=-1, bordercolor="tGreen", border="lrtb"
 
 
 s.addTimeLine(ticks=2)
-
+s.save("connected-components-2.fig")

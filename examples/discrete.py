@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing(alpha=0, omega=13, discrete=1)
+s = StreamFig(alpha=0, omega=13, discrete=1)
 
 s.addNode("a")
 s.addNode("b", [(1,5), (7,13)])
@@ -15,3 +15,4 @@ s.addLink("b", "c", 8, 12)
 
 s.addTimeLine(ticks=2)
 
+s.save("discrete.fig")

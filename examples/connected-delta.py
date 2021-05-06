@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addNode("a")
 s.addNode("b")
@@ -20,3 +20,4 @@ s.addLink("a", "c", 5, 5)
 
 s.addParameter("D", 2.2)
 s.addTimeLine(ticks=2)
+s.save("connected-delta.fig")

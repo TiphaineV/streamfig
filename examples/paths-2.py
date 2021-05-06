@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 
 s.addColor("tPink", "#FF9896") # 255, 152,150
 
@@ -21,3 +21,4 @@ s.addPath([(2,"d","b"), (3,"b","a"), (7.5, "a", "b"), (8, "b", "c")], 2, 8, colo
 
 s.addTimeLine(ticks=2)
 
+s.save("paths-2.fig")

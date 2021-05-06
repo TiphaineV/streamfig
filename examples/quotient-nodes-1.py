@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing()
+sg = StreamFig()
 
 sg.addNode("a")
 sg.addNode("b")
@@ -27,3 +27,4 @@ sg.addNodeCluster("d", [(0,5)], color=14, width=100)
 
 sg.addTimeLine(ticks=2)
 
+sg.save("quotient-nodes-1.fig")

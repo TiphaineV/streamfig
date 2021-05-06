@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-s = Drawing()
+s = StreamFig()
 s.addColor("tBlue", "#AEC7E8") # 174,199,232
 s.addColor("tOrange", "#FFBB78") # 255,187,120
 s.addColor("tGreen", "#98DF8A") # 152,223,138
@@ -50,4 +50,4 @@ s.addNodeCluster("d",[(4,5),(7,9)], color="tPink", width=100)
 
 
 s.addTimeLine(ticks=2)
-
+s.save("core-3.fig")

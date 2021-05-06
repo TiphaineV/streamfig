@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing()
+sg = StreamFig()
 
 sg.addNode("a")
 sg.addNode("b")
@@ -13,3 +13,4 @@ sg.addLink("b", "c", 3, 9)
 
 sg.addTimeLine(ticks=2)
 
+sg.save("line-stream-1.fig")

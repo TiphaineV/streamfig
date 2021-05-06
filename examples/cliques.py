@@ -1,6 +1,6 @@
-from Drawing import *
+from streamfig import *
 
-sg = Drawing()
+sg = StreamFig()
 sg.addColor("red", "#FF8080")
 sg.addNode("a")
 sg.addNode("b")
@@ -18,4 +18,4 @@ sg.addRectangle("a","c",2,4,color=11)
 sg.addRectangle("b","d",7,8,color="red")
 
 sg.addTimeLine(ticks=2)
-
+sg.save("cliques.fig")
