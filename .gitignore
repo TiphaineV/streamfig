@@ -1,6 +1,5 @@
 *.fig
 *.eps
-*.png
 *.pyc
 build/
 dist/
