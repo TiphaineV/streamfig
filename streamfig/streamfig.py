@@ -7,7 +7,7 @@
 
 import sys
 
-__version__ = "1.1.6"
+__version__ = "1.2"
 __author__ = "Tiphaine Viard"
 
 def drange(start, stop, step):
@@ -203,20 +203,29 @@ Single\n\
             self._first_node = u
 
         self._node_cpt += 1
-        self._nodes[u] = self._node_cpt
+        self._nodes[u] = {
+            "id": self._node_cpt,
+            "times": times,
+            "color": color,
+            "width": width
+        }
 
-        print("4 0 " + str(color) + " 50 -1 0 30 0.0000 4 135 120 " + str(self._offset_x + int(self._alpha * self._time_unit) - 400) + " " + str(self._offset_y + 125 + int(self._node_cpt * self._node_unit)) + " " + str(u) + "\\001")
 
-        
+    def printDiscreteNode(self, u):
+        color = self._nodes[u]["color"]
+        times = self._nodes[u]["times"]
+        nodeid = self._nodes[u]["id"]
+        width = self._nodes[u]["width"]
+
+        print("4 0 " + str(color) + " 50 -1 0 30 0.0000 4 135 120 " + str(self._offset_x + int(self._alpha * self._time_unit) - 400) + " " + str(self._offset_y + 125 + int(nodeid * self._node_unit)) + " " + str(u) + "\\001", file=self._out_fp)
+
         if len(times) == 0:
             for i in drange(self._alpha, self._omega, self._discrete):
-                print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
+                print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + nodeid * self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
         else:
             for (i,j) in times:
                 for x in drange(i, j, self._discrete):
-                    print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(x * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
-
-
+                    print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(x * self._time_unit)) + " " + str(self._offset_y + nodeid * self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
 
     def __addContinuousNode(self, u, times=[], color=0, linetype=None):
         """ nodeId : identifiant du noeud
@@ -240,7 +249,7 @@ Single\n\
             linetype = self.linetype
         self._nodes[u]["linetype"] = linetype
 
-    def printNode(self, u):
+    def printContinuousNode(self, u):
         color = self._nodes[u]["color"]
         times = self._nodes[u]["times"]
         linetype = self._nodes[u]["linetype"]
@@ -303,7 +312,16 @@ Single\n\
 
         self._links.append(link)
 
-    def __addDiscreteLink(self, u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
+    def __printDiscreteLink(self, link): # u, v, b, e, curving=0.0, color=0, height=0.5, width=3):
+        u = link["u"]
+        v = link["v"]
+        b = link["b"]
+        e = link["e"]
+        color = link["color"]
+        curving = link["curving"]
+        height = link["height"]
+        width = link["width"]
+
         if color in self._colors:
             color = self._colors[color]["id"]
         if self._directed:
@@ -313,21 +331,21 @@ Single\n\
             else:
                 arrow_type = "1 0"
         else:
-            if self._nodes[u] > self._nodes[v]:
+            if self._nodes[u]["id"] > self._nodes[v]["id"]:
                 (u,v) = (v,u)
             arrow_type = "0 0"
 
         for i in drange(b,e, self._discrete):
             # Draw circles for u and v
-            print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
-            print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025")
+            print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
+            print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(i * self._time_unit)) + " " + str(self._offset_y + self._nodes[v]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
             
             # Link them
-            x1, y1 = self._offset_x + int(i * self._time_unit), self._offset_y + self._nodes[u]*self._node_unit
+            x1, y1 = self._offset_x + int(i * self._time_unit), self._offset_y + self._nodes[u]["id"]*self._node_unit
             x2 = self._offset_x + int((i + curving) * self._time_unit)
-            y2 = int((self._offset_y + self._nodes[v]*self._node_unit) - 0.5 * (self._nodes[v]-self._nodes[u]) * self._node_unit) 
+            y2 = int((self._offset_y + self._nodes[v]["id"]*self._node_unit) - 0.5 * (self._nodes[v]["id"]-self._nodes[u]["id"]) * self._node_unit) 
             x3 = self._offset_x + int(i * self._time_unit)
-            y3 = self._offset_y + self._nodes[v]*self._node_unit
+            y3 = self._offset_y + self._nodes[v]["id"]*self._node_unit
 
             if self._directed:
                 dir_arg1 = "2"
@@ -336,19 +354,19 @@ Single\n\
                 dir_arg1 = "0"
                 dir_arg2 = "-1.000"
 
-            sys.stdout.write("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n")
+            print("3 2 0 " + str(width) + " " + str(color) + " 7 50 -1 -1 0.000 0 " + str(arrow_type) + " 3\n", file=self._out_fp)
             # arrow type
             if self._directed:
-                sys.stdout.write("1 1 3.00 90.00 150.00\n")
-            sys.stdout.write("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3))
-            sys.stdout.write("0.000 " + str(dir_arg2) + " 0.000\n")
+                print("1 1 3.00 90.00 150.00\n", file=self._out_fp)
+            print("%s %s %s %s %s %s\n" % (x1, y1, x2, y2, x3, y3), file=self._out_fp)
+            print("0.000 " + str(dir_arg2) + " 0.000\n", file=self._out_fp)
 
-            numnodes = abs(self._nodes[u] - self._nodes[v])
+            numnodes = abs(self._nodes[u]["id"] - self._nodes[v]["id"])
 
     def printLink(self, link):
 
         if self._discrete > 0:
-            pass
+            self.__printDiscreteLink(link)
         else:
             self.__printContinuousLink(link)
 
@@ -379,9 +397,6 @@ Single\n\
             if self._nodes[u]["id"] > self._nodes[v]["id"]:
                 (u,v) = (v,u)
             arrow_type = "0 0"
-
-            
-
 
         # Draw circles for u and v
         print("1 3 0 " + str(width) + " " + str(color) + " " + str(color) + " 49 -1 20 0.000 1 0.0000 " + str(self._offset_x + int(b * self._time_unit)) + " " + str(self._offset_y + self._nodes[u]["id"]*self._node_unit) + " 45 45 -6525 -2025 -6480 -2025", file=self._out_fp)
@@ -416,7 +431,6 @@ Single\n\
 
             x, y = base_x, base_y 
             spline_coords.append((x, y))     
-
 
 
         if self._directed:
@@ -938,8 +952,13 @@ Single\n\
             
             self.printColors()
 
+            if self._discrete:
+                printNode = self.printDiscreteNode
+            else:
+                printNode = self.printContinuousNode
+
             for u in self._nodes:
-                self.printNode(u)
+                printNode(u)
 
             for link in self._links:
                 self.printLink(link)
@@ -953,6 +972,8 @@ Single\n\
             for tnm in self._timenodemarks:
                 self.printTimeNodeMark(tnm)
 
+            # Add white rectangle for padding
+            self.addRectangle(self._first_node, self._first_node, self._alpha, self._omega, width=300,depth=60, color=7)
             for r in self._rectangles:
                 self.printRectangle(r)
 
@@ -967,6 +988,7 @@ Single\n\
 
             if self._timeline["display"]:
                 self.printTimeLine()
+
 
 
     def optimize(self):
@@ -996,7 +1018,6 @@ Single\n\
 
     def __del__(self):
         # Adds white rectangle in background around first node (for EPS bounding box)
-        self.addRectangle(self._first_node, self._first_node, self._alpha, self._omega, width=300,depth=60, color=7)
         self._out_fp.close()
 
 # main
